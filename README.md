@@ -3,6 +3,6 @@ old maid /babanuki simulator
 
 
 # require
-python 2.7
+python 3.5
 numpy
 pandas

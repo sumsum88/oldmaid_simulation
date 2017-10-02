@@ -4,6 +4,7 @@
 import random
 import numpy as np
 import pandas as pd
+import argparse
 
 
 class Card(object):
@@ -172,15 +173,24 @@ class Game(object):
 
 
 def main():
-    n_people = 9
+    p = argparse.ArgumentParser()
+    p.add_argument('-s', '--serve_randomly', action='store_true', default=False,
+                   help='decide randomly the first player to be served cards (default: False)')
+    p.add_argument('-b', '--begin_randomly', action='store_true', default=False,
+                   help='decide randamly the first player to draw  (default: False)')
+    p.add_argument('-g', '--n_game', metavar='N', type=int, default=10000,
+                   help='the number of game')
+    p.add_argument('-p', '--n_people', metavar='N', type=int, default=6,
+                   help='the number of player')
+    args = p.parse_args()
 
-    results = {p: [] for p in range(n_people)}
+    results = {p: [] for p in range(args.n_people)}
 
-    for i in range(10000):
+    for i in range(args.n_game):
         game = Game(
-            n_people=n_people,
-            serve_randomly=True,
-            begin_randomly=False
+            n_people=args.n_people,
+            serve_randomly=args.serve_randomly,
+            begin_randomly=args.begin_randomly
         )
         game.play()
         for n, p in enumerate(game.results):
@@ -188,8 +198,7 @@ def main():
 
     for p in results.keys():
         score = pd.Series(results[p]).value_counts()
-        #score = np.array(results[p]).mean()
-        print('{}: first: {}, last: {}'.format(p, score.ix[0], score.ix[n_people-1]))
+        print('{}: first: {}, last: {}'.format(p, score.ix[0], score.ix[args.n_people-1]))
 
 
 if __name__ == '__main__':
